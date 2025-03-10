@@ -23,16 +23,13 @@ export const {
 
       const existingAccount = await getAccountByUserId(existingUser.id);
 
-      token.isOauth = !!existingAccount;
-      token.name = existingUser.name;
-      token.email = existingUser.email;
-      token.image = existingUser.image;
-      token.role = existingUser.role;
-
-      return token;
+      return {
+        ...token,
+        isOauth: !!existingAccount,
+        role: existingUser.role,
+      };
     },
     async session({ token, session }) {
-      console.log("session", session);
       return {
         ...session,
         user: {
@@ -49,7 +46,7 @@ export const {
       if (!user.id) return false;
 
       const existingUser = await getUserById(user.id);
-      if (!existingUser?.emailVerified) return false;
+      // if (!existingUser?.emailVerified) return false;
 
       return true;
     },

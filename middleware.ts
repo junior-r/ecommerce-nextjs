@@ -1,31 +1,44 @@
 import authConfig from "./auth.config";
 import NextAuth from "next-auth";
 
-// Use only one of the two middleware options below
-// 1. Use middleware directly
-// export const { auth: middleware } = NextAuth(authConfig)
-
-// 2. Wrapped middleware option
 const { auth } = NextAuth(authConfig);
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
 
-const url = process.env.NEXT_PUBLIC_URL;
-
-const privateRoutes = ["/users/profile", "/dashboard"];
+const privateRoutes: { path: string; role?: string }[] = [
+  { path: "/users/profile", role: "" },
+  { path: "/dashboard", role: "admin" },
+];
 
 export default auth(async (req) => {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
-  console.log(req.auth);
-
-  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
   const isAuthRoute = ["/login", "/register"].includes(nextUrl.pathname);
   const isApiRoute = nextUrl.pathname.includes("/api");
+  const isProtectedRoute = privateRoutes.find((route) =>
+    nextUrl.pathname.startsWith(route.path)
+  );
 
-  if (isApiRoute) return;
-  if (isLoggedIn && isAuthRoute) return Response.redirect(`${url}/dashboard`);
   if (!isLoggedIn && isAuthRoute) return;
-  if (!isLoggedIn && isPrivateRoute) return Response.redirect(`${url}/login`);
+  if (isLoggedIn && isAuthRoute)
+    return NextResponse.redirect(new URL("/", req.url));
+  if (isLoggedIn && isApiRoute)
+    return NextResponse.redirect(new URL("/", req.url));
+
+  if (isProtectedRoute) {
+    if (!isLoggedIn) return NextResponse.redirect(new URL("/login", req.url));
+
+    if (
+      token &&
+      token.role &&
+      isProtectedRoute.role &&
+      token.role.trim() !== isProtectedRoute.role.trim()
+    ) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
 });
 
 export const config = {
