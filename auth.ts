@@ -25,6 +25,9 @@ export const {
 
       return {
         ...token,
+        name: existingUser.name,
+        email: existingUser.email,
+        picture: existingUser.image,
         isOauth: !!existingAccount,
         role: existingUser.role,
       };
@@ -35,6 +38,9 @@ export const {
         user: {
           ...session.user,
           id: token.sub,
+          name: token.name,
+          email: token.email,
+          image: token.picture,
           isOauth: token.isOauth,
           role: token.role,
         },

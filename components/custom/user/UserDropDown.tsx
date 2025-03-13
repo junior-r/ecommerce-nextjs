@@ -28,6 +28,11 @@ function UserDropDown({ user }: Props) {
         <DropdownMenuItem>
           <Link href="/users/profile">Profile</Link>
         </DropdownMenuItem>
+        {user.role === "admin" && (
+          <DropdownMenuItem>
+            <Link href="/dashboard">Dashboard</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogoutBtn />

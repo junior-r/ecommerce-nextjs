@@ -13,54 +13,29 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/ui/theme-toggle";
 import { User } from "next-auth";
-import {
-  ArrowLeftIcon,
-  LogOutIcon,
-  UserIcon,
-  Ellipsis,
-  ShieldUser,
-} from "lucide-react";
+import { ArrowLeftIcon, Store, Shapes, Users } from "lucide-react";
 import Link from "next/link";
-import logout from "@/actions/logout";
 import { usePathname } from "next/navigation";
 
 type Props = {
   user: User;
 };
 
-type MenuItem = {
-  name: string;
-  href: string;
-  icon: React.FC;
-  asLink: boolean;
-  callBack?: () => void;
-};
-
-const normalUserMenu: MenuItem[] = [
+const normalUserMenu = [
   {
-    name: "Profile",
-    href: "/users/profile",
-    icon: UserIcon,
-    asLink: true,
+    name: "Categories",
+    href: "/dashboard/categories",
+    icon: Shapes,
   },
   {
-    name: "Accounts",
-    href: "/accounts",
-    icon: ShieldUser,
-    asLink: true,
+    name: "Products",
+    href: "/dashboard/products",
+    icon: Store,
   },
   {
-    name: "Change Password",
-    href: "/change-password",
-    icon: Ellipsis,
-    asLink: true,
-  },
-  {
-    name: "Logout",
-    href: "/logout",
-    icon: LogOutIcon,
-    asLink: false,
-    callBack: logout,
+    name: "Users",
+    href: "/dashboard/users",
+    icon: Users,
   },
 ];
 
@@ -88,38 +63,20 @@ export function AppSidebar({ user }: Props) {
                 (pathname.startsWith(item.href) && item.href !== "/");
               return (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton
-                    asChild
-                    onClick={
-                      item.callBack ? () => item.callBack?.() : undefined
-                    }
-                  >
-                    {item.asLink ? (
-                      <Link
-                        href={item.href}
-                        className={`flex items-center gap-2 ${
-                          isActive ? "font-bold" : ""
-                        }`}
-                      >
-                        <item.icon />
-                        <span>{item.name}</span>
-                      </Link>
-                    ) : (
-                      <button className="cursor-pointer flex items-center gap-2">
-                        <item.icon />
-                        <span>{item.name}</span>
-                      </button>
-                    )}
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-2 ${
+                        isActive ? "font-bold" : ""
+                      }`}
+                    >
+                      <item.icon />
+                      <span>{item.name}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
             })}
-            {/* <SidebarMenuItem key={"Logout"}>
-              <SidebarMenuButton onClick={logout} className="cursor-pointer">
-                <LogOutIcon />
-                <span>{"Logout"}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup />
@@ -127,10 +84,13 @@ export function AppSidebar({ user }: Props) {
       <SidebarFooter>
         <div className="flex items-center justify-between gap-2 rounded-lg transition hover:bg-gray-600/30 dark:hover:bg-black/80 py-2 px-1">
           <UserAvatar user={user} />
-          <div className="flex flex-col items-start text-sm flex-1">
+          <Link
+            className="flex flex-col items-start text-sm flex-1"
+            href="/users/profile"
+          >
             <p className="font-semibold">{user.name}</p>
             <p>{user.email}</p>
-          </div>
+          </Link>
         </div>
       </SidebarFooter>
     </Sidebar>

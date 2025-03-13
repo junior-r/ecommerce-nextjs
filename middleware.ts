@@ -24,8 +24,7 @@ export default auth(async (req) => {
   if (!isLoggedIn && isAuthRoute) return;
   if (isLoggedIn && isAuthRoute)
     return NextResponse.redirect(new URL("/", req.url));
-  if (isLoggedIn && isApiRoute)
-    return NextResponse.redirect(new URL("/", req.url));
+  //if (isLoggedIn && isApiRoute) return NextResponse.redirect(new URL("/", req.url));
 
   if (isProtectedRoute) {
     if (!isLoggedIn) return NextResponse.redirect(new URL("/login", req.url));
