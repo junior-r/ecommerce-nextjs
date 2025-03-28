@@ -8,6 +8,7 @@ import { NextResponse } from "next/server";
 const privateRoutes: { path: string; role?: string }[] = [
   { path: "/users/profile", role: "" },
   { path: "/dashboard", role: "admin" },
+  { path: "/dashboard/categories", role: "admin" },
 ];
 
 export default auth(async (req) => {

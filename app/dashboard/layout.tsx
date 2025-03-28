@@ -21,7 +21,7 @@ async function UsersLayout({
 
   return (
     <section className="min-h-screen bg-white dark:bg-black">
-      <section className="flex gap-4 flex-wrap content-start flex-row relative">
+      <section className="flex gap-2 flex-wrap content-start flex-row relative">
         <div>
           <SidebarProvider>
             <AppSidebar user={session.user} />
@@ -31,7 +31,6 @@ async function UsersLayout({
           </SidebarProvider>
         </div>
         <div className="grow">
-          <h1>Users Layout</h1>
           {children}
         </div>
       </section>
